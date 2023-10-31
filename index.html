@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Цитаты из книги</title>
+</head>
+<body>
+  <h1>Цитаты из книги</h1>
+  <p>Выберите файл книги в формате txt:</p>
+  <input type="file" id="book" accept=".txt" required>
+  <p>Введите номер страницы (от 1 до 100):</p>
+  <input type="number" id="page" min="1" max="100" required>
+  <p>Введите номер строки (от 1 до 10):</p>
+  <input type="number" id="line" min="1" max="10" required>
+  <button id="show">Показать цитату</button>
+  <div id="answer">
+    <p id="quote"></p>
+    <p id="source"></p>
+  </div>
+  <script>
+    // Получаем элементы страницы
+    var book = document.getElementById("book");
+    var page = document.getElementById("page");
+    var line = document.getElementById("line");
+    var show = document.getElementById("show");
+    var answer = document.getElementById("answer");
+    var quote = document.getElementById("quote");
+    var source = document.getElementById("source");
+
+    // Добавляем обработчик события клика по кнопке
+    show.addEventListener("click", function() {
+      // Проверяем, что файл был выбран
+      if (book.files.length > 0) {
+        // Создаем объект FileReader для чтения файла
+        var reader = new FileReader();
+
+        // Определяем функцию, которая будет вызвана при загрузке файла
+        reader.onload = function(event) {
+          // Получаем содержимое файла в виде строки
+          var content = event.target.result;
+
+          // Разбиваем строку на массив строк по символу переноса строки
+          var lines = content.split("\n");
+
+          // Считываем номер страницы и строки из полей ввода
+          var pageNum = parseInt(page.value);
+          var lineNum = parseInt(line.value);
+
+          // Проверяем, что номера страницы и строки в допустимом диапазоне
+          if (pageNum < 1  pageNum > 100  lineNum < 1 || lineNum > 10) {
+            alert("Неверный номер страницы или строки. Допустимый диапазон: от 1 до 100 для страницы и от 1 до 10 для строки.");
+            return; // Завершаем функцию
+          }
+
+          // Вычисляем индекс строки на указанной странице
+          // Предполагаем, что каждая страница содержит 10 строк
+          var index = (pageNum - 1) * 10 + lineNum - 1;
+
+          // Считываем строку из массива строк
+          var sentence = lines[index];
+
+          // Выводим строку на экран
+          quote.textContent = sentence;
+          source.textContent = "Страница " + pageNum + ", строка " + lineNum;
+          answer.style.display = "block";
+        };
+
+        // Читаем файл как текст
+        reader.readAsText(book.files[0]);
+      } else {
+        alert("Выберите файл книги.");
+      }
+    });
+  </script>
+</body>
+</html>
