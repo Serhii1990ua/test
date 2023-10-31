@@ -17,7 +17,11 @@
     <p id="quote"></p>
     <p id="source"></p>
   </div>
-  <script>
+  <script type='text/javascript'>
+    // Определяем константы для количества строк на странице и максимального количества страниц
+    const LINES_PER_PAGE = 10;
+    const MAX_PAGES = 100;
+
     // Получаем элементы страницы
     var book = document.getElementById("book");
     var page = document.getElementById("page");
@@ -31,6 +35,13 @@
     show.addEventListener("click", function() {
       // Проверяем, что файл был выбран
       if (book.files.length > 0) {
+        // Проверяем, что файл имеет расширение txt
+        var ext = book.files[0].name.endsWith(".txt");
+        if (!ext) {
+          alert("Выберите файл в формате txt.");
+          return; // Завершаем функцию
+        }
+
         // Создаем объект FileReader для чтения файла
         var reader = new FileReader();
 
@@ -47,14 +58,13 @@
           var lineNum = parseInt(line.value);
 
           // Проверяем, что номера страницы и строки в допустимом диапазоне
-          if (pageNum < 1  pageNum > 100  lineNum < 1 || lineNum > 10) {
-            alert("Неверный номер страницы или строки. Допустимый диапазон: от 1 до 100 для страницы и от 1 до 10 для строки.");
+          if (pageNum < 1  pageNum > MAX_PAGES  lineNum < 1 || lineNum > LINES_PER_PAGE) {
+            alert("Неверный номер страницы или строки. Допустимый диапазон: от 1 до " + MAX_PAGES + " для страницы и от 1 до " + LINES_PER_PAGE + " для строки.");
             return; // Завершаем функцию
           }
 
           // Вычисляем индекс строки на указанной странице
-          // Предполагаем, что каждая страница содержит 10 строк
-          var index = (pageNum - 1) * 10 + lineNum - 1;
+          var index = (pageNum - 1) * LINES_PER_PAGE + lineNum - 1;
 
           // Считываем строку из массива строк
           var sentence = lines[index];
@@ -63,6 +73,16 @@
           quote.textContent = sentence;
           source.textContent = "Страница " + pageNum + ", строка " + lineNum;
           answer.style.display = "block";
+        };
+
+        // Определяем функцию, которая будет вызвана при ошибке чтения файла
+        reader.onerror = function() {
+          alert("Произошла ошибка при чтении файла.");
+        };
+
+        // Определяем функцию, которая будет вызвана при отмене чтения файла
+        reader.onabort = function() {
+          alert("Чтение файла было отменено.");
         };
 
         // Читаем файл как текст
