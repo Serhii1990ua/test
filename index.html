@@ -58,7 +58,7 @@
           var lineNum = parseInt(line.value);
 
           // Проверяем, что номера страницы и строки в допустимом диапазоне
-          if (pageNum < 1  pageNum > MAX_PAGES  lineNum < 1 || lineNum > LINES_PER_PAGE) {
+          if (pageNum < 1 || pageNum > MAX_PAGES || lineNum < 1 || lineNum > LINES_PER_PAGE){
             alert("Неверный номер страницы или строки. Допустимый диапазон: от 1 до " + MAX_PAGES + " для страницы и от 1 до " + LINES_PER_PAGE + " для строки.");
             return; // Завершаем функцию
           }
